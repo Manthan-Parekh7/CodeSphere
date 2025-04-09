@@ -1,0 +1,184 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Code Editor</title>
+
+    <!-- Ace Editor -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.6/ace.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.6/ext-language_tools.js"></script>
+  </head>
+  <body class="bg-gray-900 text-white p-5">
+    <div class="max-w-5xl mx-auto">
+      <h1 class="text-2xl font-bold text-center mb-4">Code Editor</h1>
+
+      <!-- Language & Theme Selection -->
+      <div class="flex justify-between items-center mb-4">
+        <select id="language" class="bg-gray-800 text-white p-2 rounded">
+          <option value="c">C</option>
+          <option value="cpp">C++</option>
+          <option value="javascript">JavaScript</option>
+          <option value="python">Python</option>
+        </select>
+        <select id="theme" class="bg-gray-800 text-white p-2 rounded">
+          <option value="dracula">Dracula</option>
+          <option value="monokai">Monokai</option>
+          <option value="github">GitHub</option>
+          <option value="solarized_dark">Solarized Dark</option>
+        </select>
+      </div>
+
+      <!-- Editor -->
+      <div id="editor" class="h-80 border border-gray-700 rounded"></div>
+
+      <!-- Buttons -->
+      <div id="buttons" class="flex justify-between mt-4">
+        <button onclick="runCode()" class="bg-green-500 p-2 rounded">
+          Run
+        </button>
+        <button onclick="saveCode()" class="bg-blue-500 p-2 rounded">
+          Save
+        </button>
+        <button onclick="exportCode()" class="bg-purple-500 p-2 rounded">
+          Export
+        </button>
+        <button
+          onclick="location.href='/StudentManage/';"
+          class="bg-gray-500 p-2 rounded"
+        >
+          Back
+        </button>
+      </div>
+
+      <!-- Custom Input -->
+      <textarea
+        id="custom-input"
+        class="w-full p-2 mt-2 bg-gray-800 text-white border border-gray-700 rounded"
+        placeholder="Custom Input..."
+      ></textarea>
+
+      <!-- Output Box -->
+      <div
+        class="mt-2 p-2 bg-gray-800 border border-gray-700 rounded h-32 overflow-auto"
+        id="output"
+      >
+        Output will be shown here...
+      </div>
+    </div>
+
+    <script>
+      // Load the autocompletion extension
+      ace.require("ace/ext/language_tools");
+
+      var editor = ace.edit("editor");
+      editor.setTheme("ace/theme/dracula");
+      editor.session.setMode("ace/mode/javascript"); // Default language
+
+      // Enable autocompletion
+      editor.setOptions({
+        enableBasicAutocompletion: true,
+        enableLiveAutocompletion: true,
+        enableSnippets: true,
+        fontSize: "14px",
+      });
+
+      // Load existing content from Django
+      editor.setValue(`{{ content|escapejs }}`, -1);
+
+      // Change language dynamically
+      document.getElementById("language").addEventListener("change", function () {
+        let mode = {
+          c: "ace/mode/c_cpp",
+          cpp: "ace/mode/c_cpp",
+          javascript: "ace/mode/javascript",
+          python: "ace/mode/python",
+        }[this.value];
+        editor.session.setMode(mode);
+      });
+
+      // Change theme dynamically
+      document.getElementById("theme").addEventListener("change", function () {
+        editor.setTheme("ace/theme/" + this.value);
+      });
+
+      function runCode() {
+    document.getElementById("output").innerText = "Running...";
+    
+    let fileId = "{{ file.id }}";  // Get file_id from Django template
+
+    fetch(`/StudentManage/run_code/${fileId}/`, {  // ✅ Fixed the URL syntax
+        method: "POST",
+        headers: { 
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"  // ✅ Added CSRF token for Django
+        },
+        body: JSON.stringify({
+            language: document.getElementById("language").value,
+            code: editor.getValue(),
+            input: document.getElementById("custom-input").value
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("output").innerText = data.output;
+    })
+    .catch(error => {
+        document.getElementById("output").innerText = "❌ Error Running Code!";
+        console.error("Error:", error);
+    });
+}
+
+
+      function saveCode() {
+        let code = editor.getValue();
+        let fileId = "{{ file.id }}";
+
+        fetch(`/StudentManage/save_code/${fileId}/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}",
+          },
+          body: JSON.stringify({ code: code }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            let message = document.createElement("p");
+            message.innerText = data.success
+              ? "✅ Code Saved Successfully!"
+              : "❌ Error Saving Code: " + data.error;
+            message.classList.add("mt-2", "p-2", "rounded", "text-center");
+            message.classList.add(
+              data.success ? "bg-green-500" : "bg-red-500"
+            );
+
+            document.getElementById("buttons").insertAdjacentElement("afterend", message);
+            setTimeout(() => message.remove(), 3000);
+          })
+          .catch((error) => {
+            console.error("Error saving code:", error);
+          });
+      }
+
+      function exportCode() {
+        let blob = new Blob([editor.getValue()], {
+          type: "text/plain;charset=utf-8",
+        });
+        saveAs(blob, "code.txt");
+      }
+
+      function resizeEditor() {
+        let newHeight = window.innerHeight * 0.7;
+        document.getElementById("editor").style.height = newHeight + "px";
+        editor.resize();
+      }
+
+      window.onload = resizeEditor;
+      window.onresize = resizeEditor;
+    </script>
+  </body>
+</html>

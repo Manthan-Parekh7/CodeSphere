@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{% block title %}CodeSphere{% endblock %}</title>
+
+        <!-- ✅ Google Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
+        <!-- ✅ Tailwind CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
+
+        <!-- ✅ Load Static Files -->
+        <link rel="stylesheet" type="text/css" href="{% static 'login.css' %}" />
+        <!-- ✅ Use the same login.css -->
+
+        {% block extra_css %}{% endblock %}
+    </head>
+
+    <body class="bg-[#14132b] text-[#eaeaea] font-[Poppins]">
+        <!-- ✅ Updated Navbar -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <a href="/" class="nav-link">Home</a>
+                {% if user.is_authenticated %}
+                <a href="/codeeditor/" class="nav-link">Code Editor</a>
+                <a href="/logout/" class="nav-link">Logout</a>
+                {% else %}
+                <a href="/login/" class="nav-link">Login</a>
+                <a href="/signup/" class="nav-link">Signup</a>
+                {% endif %}
+            </div>
+        </nav>
+
+        <!-- ✅ Main Content -->
+        <div class="container mx-auto p-6">{% block content %} {% endblock %}</div>
+
+        <!-- ✅ Footer -->
+        <footer class="text-center py-4 mt-10 bg-[#1e1d45] text-gray-400 text-sm">© 2025 CodeSphere. All Rights Reserved.</footer>
+    </body>
+</html>

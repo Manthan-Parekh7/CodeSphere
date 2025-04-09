@@ -1,0 +1,5 @@
+#editor {
+    height: 70vh; /* Adjusts height to 70% of viewport */
+    width: 100%;  /* Full width */
+    border: 1px solid #444;
+}

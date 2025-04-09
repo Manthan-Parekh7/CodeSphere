@@ -1,0 +1,147 @@
+{% load static %} {% block extra_css %}
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'profile.css' %}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+{% endblock %} {% block content %}
+<!-- ✅ Navbar -->
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="/" class="nav-link">Home</a>
+        <a href="/logout/" class="nav-link">Logout</a>
+    </div>
+</nav>
+
+<div class="min-h-screen w-full max-w-[700px] flex items-center justify-center">
+    <div class="w-full max-w-[550px] form-container">
+        <h2 class="form-title font-bold">Update Profile</h2>
+
+        <!-- ✅ Show Django Messages -->
+        {% if messages %}
+        <div id="message-box">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+
+        <script>
+            setTimeout(function () {
+                document.getElementById("message-box").style.display = "none";
+            }, 10000); // ✅ Hides messages after 10 seconds
+        </script>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- ✅ Technology Type -->
+            <div class="inputField-wrapper">
+                <label>Technology Type:</label>
+                {{ form.technology_type }}
+                <span class="icon"><i class="fas fa-microchip"></i></span>
+                {% if form.technology_type.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.technology_type.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- ✅ Degree Type -->
+            <div class="inputField-wrapper">
+                <label>Degree Type:</label>
+                {{ form.degree_type }}
+                <span class="icon"><i class="fas fa-graduation-cap"></i></span>
+                {% if form.degree_type.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.degree_type.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- ✅ Branch -->
+            <div class="inputField-wrapper">
+                <label>Branch:</label>
+                {{ form.branch }}
+                <span class="icon"><i class="fas fa-code-branch"></i></span>
+                {% if form.branch.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.branch.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- ✅ Semester -->
+            <div class="inputField-wrapper">
+                <label>Semester:</label>
+                {{ form.semester }}
+                <span class="icon"><i class="fas fa-calendar-alt"></i></span>
+                {% if form.semester.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.semester.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- ✅ Full Name -->
+            <div class="inputField-wrapper">
+                <label>Full Name:</label>
+                {{ form.full_name }}
+                <span class="icon"><i class="fas fa-user"></i></span>
+                {% if form.full_name.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.full_name.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- ✅ Contact Number -->
+            <div class="inputField-wrapper">
+                <label>Contact Number:</label>
+                {{ form.contact_number }}
+                <span class="icon"><i class="fas fa-phone"></i></span>
+                {% if form.contact_number.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.contact_number.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- ✅ Father's Contact Number -->
+            <div class="inputField-wrapper">
+                <label>Father's Contact Number:</label>
+                {{ form.father_contact }}
+                <span class="icon"><i class="fas fa-user-tie"></i></span>
+                {% if form.father_contact.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.father_contact.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- ✅ Mother's Contact Number -->
+            <div class="inputField-wrapper">
+                <label>Mother's Contact Number:</label>
+                {{ form.mother_contact }}
+                <span class="icon"><i class="fas fa-female"></i></span>
+                {% if form.mother_contact.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.mother_contact.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- ✅ Profile Image -->
+            <div class="inputField-wrapper">
+                <label>Profile Image:</label>
+                <input type="file" name="image" accept=".jpg,.jpeg,.png" onchange="previewImage(event)" />
+
+                {% if profile.image %}
+                <div class="profile-img-preview mt-3">
+                    <img id="profileImagePreview" class="rounded-full w-24 h-24 object-cover" src="{{ profile.image.url }}" alt="Profile Image" />
+                </div>
+                {% else %}
+                <div class="profile-img-preview mt-3">
+                    <img id="profileImagePreview" class="rounded-full w-24 h-24 object-cover" src="{% static 'profile_pics/default.jpg' %}" alt="Default Profile" />
+                </div>
+                {% endif %}
+            </div>
+            <button type="submit" class="submit">Update Profile</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function () {
+            const imgElement = document.getElementById("profileImagePreview");
+            imgElement.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
+
+{% endblock %}

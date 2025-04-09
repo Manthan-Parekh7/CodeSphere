@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Code Editor</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.6/ace.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.6/ext-language_tools.js"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="bg-gray-900 text-white p-5" id="body">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex justify-between items-center mb-4">
+            <select id="language" class="bg-gray-800 text-white p-2 rounded">
+                <option value="c">C</option>
+                <option value="cpp">C++</option>
+                <option value="javascript">JavaScript</option>
+                <option value="python">Python</option>
+            </select>
+            <input type="text" id="file-name" class="bg-gray-800 text-white p-2 rounded" placeholder="File Name" />
+            <select id="theme" class="bg-gray-800 text-white p-2 rounded">
+                <option value="dracula">Dracula</option>
+                <option value="monokai">Monokai</option>
+                <option value="github">GitHub</option>
+                <option value="solarized_dark">Solarized Dark</option>
+                <option value="solarized_light">Solarized Light</option>
+                <option value="tomorrow">Tomorrow</option>
+                <option value="twilight">Twilight</option>
+                <option value="xcode">Xcode</option>
+            </select>
+            <div id="buttons" class="flex space-x-3">
+                <button onclick="decreaseFontSize()" class="bg-yellow-500 p-2 rounded">A-</button>
+                <button onclick="increaseFontSize()" class="bg-yellow-500 p-2 rounded">A+</button>
+                <button onclick="runCode()" class="bg-green-500 p-2 rounded">Run</button>
+                <button onclick="saveCode()" class="bg-blue-500 p-2 rounded">Save</button>
+                <button onclick="exportCode()" class="bg-purple-500 p-2 rounded">Export</button>
+                <button onclick="location.href='/StudentManage/';" class="bg-purple-500 p-2 rounded">My Files</button>
+            </div>
+        </div>
+        <div id="editor" class="h-64 border border-gray-700 rounded"></div>
+        <textarea id="custom-input" class="w-full p-2 mt-2 bg-gray-800 text-white border border-gray-700 rounded" placeholder="Custom Input..."></textarea>
+        <div class="mt-2 p-2 bg-gray-800 border border-gray-700 rounded h-32 overflow-auto" id="output">
+            Output will be shown here...
+        </div>
+    </div>
+    <script src="{% static 'scripts/editor.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+@keyframes typewriter {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+@keyframes fade {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+.mobile-menu {
+    transform: translateY(-20px);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.mobile-menu.active {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Button hover effect */
+.btn-hover:hover {
+    transform: scale(1.05);
+    transition: transform 0.2s ease-in-out;
+}
+
+.code-block {
+    padding: 1rem;
+    background-color: black;
+    color: greenyellow; /* changed from green-500 for better contrast on black */
+    width: 100%;
+    border-radius: 0.8rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5); /* stronger shadow */
+}
+
+.gradient-text {
+    background: linear-gradient(90deg, #ff416c, #ff4b2b); /* Fiery Sunset */
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+}
+
+.gradient-text-2 {
+    background: linear-gradient(90deg, #00c6ff, #0072ff); /* Deep Blue Ocean */
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+}
+
+/* Colorful List Icons */
+.list-icon {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Dark & Light Mode Optimization */
+
+.text-primary {
+    color: #1e90ff; /* Dodger Blue */
+}
+
+.text-secondary {
+    background: linear-gradient(90deg, #ff69b4, #ff1493); /* Pink Gradient */
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+}
+
+.text-highlight {
+    color: #ff4500; /* Orange Red */
+}
+
+.feature-block {
+    border-radius: 10px;
+    padding: 1.5rem;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    font-weight: bold;
+    text-align: center;
+    color: white; /* Ensure High Contrast */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Light Shadow for Better Readability */
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: transparent;
+}

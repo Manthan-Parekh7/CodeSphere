@@ -1,0 +1,85 @@
+{% load static %} {% block extra_css %}
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'login.css' %}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+{% endblock %} {% block content %}
+<!-- ✅ Navbar Added -->
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="/" class="nav-link">Home</a>
+        <a href="/signup/" class="nav-link">Signup</a>
+    </div>
+</nav>
+
+<div class="min-h-screen w-full max-w-[700px] flex items-center justify-center">
+    <div class="w-full max-w-[550px] form-container">
+        <h2 class="form-title font-bold">Login</h2>
+
+        <!-- ✅ Show Form-Wide Errors -->
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger text-red-500 text-sm mb-4">
+            {% for error in form.non_field_errors %}
+            <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- ✅ Show Django Messages -->
+        {% if messages %}
+        <div id="message-box">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+
+        <script>
+            setTimeout(function () {
+                document.getElementById("message-box").style.display = "none";
+            }, 10000); // ✅ Hides messages after 10 seconds
+        </script>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="inputField-wrapper">
+                <label>Email:</label>
+                {{ form.email }}
+                <span class="icon"><i class="fas fa-envelope"></i></span>
+
+                <!-- ✅ Show Email Errors -->
+                {% if form.email.errors %}
+                <p class="text-red-500 text-sm mt-1">{% for error in form.email.errors %} {{ error }} {% endfor %}</p>
+                {% endif %}
+            </div>
+
+            <div class="inputField-wrapper">
+                <label>Password:</label>
+                {{ form.password }}
+                <span class="icon"><i class="fas fa-lock"></i></span>
+
+                <!-- ✅ Show Password Errors -->
+                {% if form.password.errors %}
+                <p class="text-red-500 text-sm mt-1">{% for error in form.password.errors %} {{ error }} {% endfor %}</p>
+                {% endif %}
+            </div>
+
+            <div class="flex items-center">
+                {{ form.remember_me }}
+                <label for="{{ form.remember_me.id_for_label }}" class="ml-2">Remember Me</label>
+            </div>
+
+            <p>
+                <a href="{% url 'HomePageAuth:password_reset' %}" class="text-blue-500 hover:underline">Forgot Password?</a>
+            </p>
+
+            <button type="submit" class="submit">Login</button>
+
+            <p class="text-center text-gray-300 mt-2">
+                Don't have an account?
+                <a href="/signup/" class="text-[#8f94fb] font-semibold hover:underline">Signup</a>
+            </p>
+        </form>
+    </div>
+</div>
+{% endblock %}

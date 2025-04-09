@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Online Compiler</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="{% static 'home.css' %}" />
+    </head>
+
+    <body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-white transition-all font-[Poppins]">
+        <!-- Navigation Bar -->
+        <nav class="p-4 bg-white dark:bg-gray-800 shadow flex items-center justify-between">
+            <h1 class="text-2xl font-bold">CodeSphere</h1>
+
+            <!-- Mobile Menu Toggle -->
+            <button id="menuToggle" class="md:hidden text-gray-900 dark:text-white focus:outline-none text-2xl">☰</button>
+
+            <!-- Navigation Links -->
+            <div id="navMenu" class="hidden md:flex md:items-center space-x-6">
+                {% if user.is_authenticated %}
+                <span class="text-lg font-semibold text-gray-700 dark:text-gray-300">Hello, {{ user.username }}</span>
+                <a href="{% url 'HomePageAuth:update_profile' %}" class="text-lg hover:text-blue-500 py-2">Edit Profile</a>
+                {% if user.role == 'student' %}
+                <a href="CodeEditor/" class="text-lg hover:text-blue-500">Code Editor</a>
+                <a href="/StudentManage/" class="text-lg hover:text-green-500">My Work</a>
+                {% elif user.role == 'teacher' %}
+                <a href="/StaffManage/" class="text-lg hover:text-blue-500">Assign Work</a>
+                {% endif %}
+                <a href="/logout/" class="text-lg hover:text-red-500">Logout</a>
+                {% else %}
+                <a href="/login/" class="text-lg hover:text-blue-500">Login</a>
+                <a href="/signup/" class="text-lg hover:text-green-500">Signup</a>
+                {% endif %}
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="mobile-menu hidden flex flex-col items-center bg-white dark:bg-gray-800 p-4 md:hidden">
+            {% if user.is_authenticated %}
+            <span class="text-lg font-semibold text-gray-700 dark:text-gray-300">Hello, {{ user.username }}</span>
+            <a href="{% url 'HomePageAuth:update_profile' %}" class="text-lg hover:text-blue-500 py-2">Edit Profile</a>
+            {% if user.role == 'student' %}
+            <a href="CodeEditor/" class="text-lg hover:text-blue-500">Code Editor</a>
+            <a href="/myfiles/" class="text-lg hover:text-green-500">My Files</a>
+            {% elif user.role == 'teacher' %}
+            <a href="/assignwork/" class="text-lg hover:text-blue-500">Assign Work</a>
+            <a href="/checkstudents/" class="text-lg hover:text-green-500">Check Students</a>
+            {% endif %}
+            <a href="/logout/" class="text-lg hover:text-red-500">Logout</a>
+            {% else %}
+            <a href="/login/" class="text-lg hover:text-blue-500">Login</a>
+            <a href="/signup/" class="text-lg hover:text-green-500">Signup</a>
+            {% endif %}
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8 p-12 items-stretch">
+            <!-- Left Section -->
+            <div class="bg-gray-800 text-white p-6 rounded-lg shadow-lg bg-white dark:bg-gray-800">
+                <h2 class="gradient-text-2 text-3xl md:text-4xl font-bold">Welcome to CodeSphere</h2>
+                <p class="mt-4 text-lg text-highlight">An online compiler that lets you write, compile, and save code seamlessly.</p>
+
+                <ul class="mt-4 space-y-3">
+                    <li class="list-icon flex items-center">
+                        <span class="text-primary text-2xl font-bold">✅</span>
+                        <span class="text-secondary">Supports multiple languages</span>
+                    </li>
+                    <li class="list-icon flex items-center">
+                        <span class="text-primary text-2xl font-bold">✅</span>
+                        <span class="text-secondary">Stores files safely</span>
+                    </li>
+                    <li class="list-icon flex items-center">
+                        <span class="text-primary text-2xl font-bold">✅</span>
+                        <span class="text-secondary">Submit code for review</span>
+                    </li>
+                </ul>
+
+                <div class="mt-4 flex space-x-4">
+                    {% if user.is_authenticated %}
+                    <!-- ✅ If logged in, show 'Go to Code Editor' -->
+                    <a href="CodeEditor/" class="bg-blue-500 text-white px-4 py-2 rounded-lg w-full text-center font-bold">Go to Code Editor</a>
+                    {% else %}
+                    <!-- ✅ If NOT logged in, show Login & Signup buttons -->
+                    <a href="/login/" class="bg-blue-500 text-white px-4 py-2 rounded-lg w-full text-center font-bold">Login</a>
+                    <a href="/signup/" class="bg-green-500 text-white px-4 py-2 rounded-lg w-full text-center font-bold">Sign Up</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Right Section: Code Display -->
+            <div class="bg-black text-yellow-400 p-4 rounded-lg overflow-x-auto">
+                <pre id="codeDisplay" class="code-block h-full text-2xl font-semibold"></pre>
+            </div>
+        </div>
+
+        <!-- Main Container -->
+        <div class="container mx-auto px-6 py-10">
+            <h2 class="gradient-text text-4xl font-bold text-center mb-8 font-poppins">🌟 Why to Use CodeSphere 🌟</h2>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Block 1 -->
+                <div class="feature-block bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-2 border-gray-300 dark:border-gray-600 transition-all duration-300 transform hover:scale-105 hover:bg-blue-500 hover:text-white hover:shadow-xl font-poppins">
+                    <h3 class="text-xl font-semibold">🚀 Multi-Language Support</h3>
+                    <p class="mt-2 text-gray-600 dark:text-gray-300 hover:text-white">Compile and run programs in Python, C++, Java, and more.</p>
+                </div>
+
+                <!-- Block 2 -->
+                <div class="feature-block bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-2 border-gray-300 dark:border-gray-600 transition-all duration-300 transform hover:scale-105 hover:bg-green-500 hover:text-white hover:shadow-xl font-poppins">
+                    <h3 class="text-xl font-semibold">💾 Code Persistence</h3>
+                    <p class="mt-2 text-gray-600 dark:text-gray-300 hover:text-white">Your code is saved automatically to prevent loss.</p>
+                </div>
+
+                <!-- Block 3 -->
+                <div class="feature-block bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-2 border-gray-300 dark:border-gray-600 transition-all duration-300 transform hover:scale-105 hover:bg-purple-500 hover:text-white hover:shadow-xl font-poppins">
+                    <h3 class="text-xl font-semibold">📤 Submission & Review</h3>
+                    <p class="mt-2 text-gray-600 dark:text-gray-300 hover:text-white">Submit code for teacher reviews and feedback.</p>
+                </div>
+
+                <!-- Block 4 -->
+                <div class="feature-block bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-2 border-gray-300 dark:border-gray-600 transition-all duration-300 transform hover:scale-105 hover:bg-orange-500 hover:text-white hover:shadow-xl font-poppins">
+                    <h3 class="text-xl font-semibold">🔍 Syntax Highlighting</h3>
+                    <p class="mt-2 text-gray-600 dark:text-gray-300 hover:text-white">Enjoy an enhanced coding experience with syntax highlighting.</p>
+                </div>
+
+                <!-- Block 5 -->
+                <div class="feature-block bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-2 border-gray-300 dark:border-gray-600 transition-all duration-300 transform hover:scale-105 hover:bg-red-500 hover:text-white hover:shadow-xl font-poppins">
+                    <h3 class="text-xl font-semibold">💡 Auto-Suggestions</h3>
+                    <p class="mt-2 text-gray-600 dark:text-gray-300 hover:text-white">Get intelligent suggestions while writing code.</p>
+                </div>
+
+                <!-- Block 6 -->
+                <div class="feature-block bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-2 border-gray-300 dark:border-gray-600 transition-all duration-300 transform hover:scale-105 hover:bg-teal-500 hover:text-white hover:shadow-xl font-poppins">
+                    <h3 class="text-xl font-semibold">⚡ Real-Time Execution</h3>
+                    <p class="mt-2 text-gray-600 dark:text-gray-300 hover:text-white">See outputs instantly with real-time execution.</p>
+                </div>
+
+                <!-- Block 7 -->
+                <div class="feature-block bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-2 border-gray-300 dark:border-gray-600 transition-all duration-300 transform hover:scale-105 hover:bg-indigo-500 hover:text-white hover:shadow-xl font-poppins">
+                    <h3 class="text-xl font-semibold">🌙 Dark Mode Support</h3>
+                    <p class="mt-2 text-gray-600 dark:text-gray-300 hover:text-white">Switch between light and dark themes easily.</p>
+                </div>
+
+                <!-- Block 8 -->
+                <div class="feature-block bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-2 border-gray-300 dark:border-gray-600 transition-all duration-300 transform hover:scale-105 hover:bg-yellow-500 hover:text-white hover:shadow-xl font-poppins">
+                    <h3 class="text-xl font-semibold">🔗 Cloud Storage</h3>
+                    <p class="mt-2 text-gray-600 dark:text-gray-300 hover:text-white">Store your code on Google Drive securely.</p>
+                </div>
+
+                <!-- Block 9 -->
+                <div class="feature-block bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-2 border-gray-300 dark:border-gray-600 transition-all duration-300 transform hover:scale-105 hover:bg-pink-500 hover:text-white hover:shadow-xl font-poppins">
+                    <h3 class="text-xl font-semibold">📁 Download & Share</h3>
+                    <p class="mt-2 text-gray-600 dark:text-gray-300 hover:text-white">Download your code or share it with friends.</p>
+                </div>
+            </div>
+        </div>
+
+        <footer class="bg-gray-900 text-white text-center p-4 mt-10">
+            <p class="text-lg font-semibold">© 2025 CodeSphere. All Rights Reserved.</p>
+        </footer>
+        <script src="{% static 'home.js' %}"></script>
+    </body>
+</html>

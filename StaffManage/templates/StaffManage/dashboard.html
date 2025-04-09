@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Faculty Dashboard</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body class="bg-[#121826] text-gray-200">
+        <header class="bg-[#1f2937] shadow-md py-4">
+            <h1 class="text-center text-3xl font-bold text-blue-400">Faculty Dashboard</h1>
+        </header>
+
+        <div class="container mx-auto grid grid-cols-12 gap-4 px-4 py-6">
+            <!-- Faculty Details Section -->
+            <div class="col-span-3 bg-[#1e293b] p-4 rounded-lg h-full">
+                <h2 class="text-lg font-bold text-center text-blue-300">Faculty Details</h2>
+                <hr class="my-4 border-gray-600" />
+                <img src="{{ profile.image.url }}" alt="Profile" class="w-48 h-48 object-cover rounded-lg mx-auto" />
+                <div class="mt-4">
+                    <h2 class="text-center text-lg font-semibold text-blue-300">{{ profile.full_name }}</h2>
+                    <hr class="my-4 border-gray-600" />
+                    <h3 class="text-center text-lg font-semibold text-blue-300">Semester: {{ profile.semester }}</h3>
+                    <h3 class="text-center text-lg font-semibold text-blue-300">Faculty: {{ profile.technology_type }}</h3>
+                    <h3 class="text-center text-lg font-semibold text-blue-300">Degree: {{ profile.degree_type }}</h3>
+                    <h3 class="text-center text-lg font-semibold text-blue-300">Branch: {{ profile.branch }}</h3>
+                    <hr class="my-4 border-gray-600" />
+                    <h2 class="text-center text-lg font-semibold text-blue-300">{{ student.division_details }}</h2>
+                    <h2 class="text-center text-lg font-semibold text-blue-300">Student Contact: {{ profile.contact_number }}</h2>
+                    <h2 class="text-center text-lg font-semibold text-blue-300">Father: {{ profile.father_contact }}</h2>
+                    <h2 class="text-center text-lg font-semibold text-blue-300">Mother: {{ profile.mother_contact }}</h2>
+                    <hr class="my-4 border-gray-600" />
+                    <h2 class="text-center text-lg font-semibold text-blue-300">Email: {{ profile.user.email }}</h2>
+                    <div class="text-center mt-4">
+                        <a href="{% url 'HomePageAuth:update_profile' %}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Update Profile</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assignment Management Section -->
+            <div class="col-span-9 bg-[#1e293b] p-6 rounded-lg">
+                <h2 class="text-xl font-semibold mb-4 text-center text-blue-300">Add Assignment</h2>
+                <form method="post" action="{% url 'add_assignment' %}" class="space-y-4">
+                    {% csrf_token %}
+                    <input type="text" id="title" name="title" placeholder="Title" class="w-full px-4 py-2 rounded-lg bg-[#27344a] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <textarea id="description" name="description" placeholder="Description" class="w-full px-4 py-2 rounded-lg bg-[#27344a] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                    <input type="date" id="due_date" name="due_date" value="{{ today }}" class="w-full px-4 py-2 rounded-lg bg-[#27344a] text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md transition">Add Assignment</button>
+                </form>
+
+                <h2 class="text-xl font-semibold mt-6 mb-4 text-blue-300">Assignments</h2>
+                <div id="newly-added-assignments" class="mb-4">
+                    {% for assignment in assignments %}
+                    <div class="bg-[#27344a] p-4 rounded-lg mb-4 flex justify-between items-center">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">{{ assignment.title }}</h3>
+                            <p class="text-gray-300">{{ assignment.description }}</p>
+                            <p class="text-gray-300">Due Date: {{ assignment.due_date }}</p>
+                        </div>
+                        <form method="post" action="{% url 'delete_assignment' assignment.assig_id %}" class="ml-4">
+                            {% csrf_token %}
+                            <button type="submit" class="text-red-500 hover:text-red-700">Delete</button>
+                        </form>
+                    </div>
+                    {% endfor %}
+                </div>
+                <table class="w-full border border-gray-600 text-white">
+                    <thead class="bg-[#27344a]">
+                        <tr>
+                            <th class="p-2">Title</th>
+                            <th class="p-2">Description</th>
+                            <th class="p-2">Due Date</th>
+                            <th class="p-2">Submissions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% comment %} {% for assignment in assignments %}
+                        <tr class="border-t border-gray-600 hover:bg-[#2d3b52]">
+                            <td class="p-2">{{ assignment.title }}</td>
+                            <td class="p-2">{{ assignment.description }}</td>
+                            <td class="p-2">{{ assignment.due_date }}</td>
+                            <td class="p-2">
+                                <a href="{% url 'submissions' assignment.id %}" class="text-blue-400 hover:underline">View Submissions</a>
+                            </td>
+                        </tr>
+                        {% endfor %} {% endcomment %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>
