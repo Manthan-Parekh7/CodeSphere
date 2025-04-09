@@ -1,4 +1,4 @@
-# 🎓 One-Stop Platform for DDU College Students
+# 🎓 One-Stop Platform for College Students
 
 ## 📌 Overview
 This project is a comprehensive platform designed for DDU college students and faculty. It streamlines classroom management, task assignments, work submissions, and code collaboration in one unified system.
